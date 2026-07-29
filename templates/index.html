@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Portal - Summer PEP Project</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <header class="navbar">
+        <div class="container">
+            <div class="logo">Summer PEP Portal</div>
+            <nav>
+                <a href="/" class="active">Home</a>
+                <a href="/about">About</a>
+                <a href="/health" target="_blank">Health Status</a>
+            </nav>
+        </div>
+    </header>
+
+    <main class="container">
+        <section class="hero">
+            <h1>Welcome to Student Portal</h1>
+            <p>A simple Flask web application demonstrating a complete DevOps CI/CD pipeline.</p>
+        </section>
+
+        <section class="cards-grid">
+            <div class="card">
+                <h3>Course Schedule</h3>
+                <p>View upcoming lecture sessions, workshops, and lab practicals.</p>
+            </div>
+            <div class="card">
+                <h3>Assignments</h3>
+                <p>Track project submissions, deadline schedules, and evaluation status.</p>
+            </div>
+            <div class="card">
+                <h3>CI/CD Status</h3>
+                <p>Automated build, test, Docker image creation, and deployment active.</p>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2026 Summer PEP DevOps Project. All rights reserved.</p>
+        </div>
+    </footer>
+</body>
+</html>

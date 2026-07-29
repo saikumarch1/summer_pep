@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About - Summer PEP Project</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <header class="navbar">
+        <div class="container">
+            <div class="logo">Summer PEP Portal</div>
+            <nav>
+                <a href="/">Home</a>
+                <a href="/about" class="active">About</a>
+                <a href="/health" target="_blank">Health Status</a>
+            </nav>
+        </div>
+    </header>
+
+    <main class="container">
+        <section class="content-box">
+            <h1>About This Project</h1>
+            <p>This application was developed as part of the Summer PEP curriculum to demonstrate an automated end-to-end DevOps workflow.</p>
+            
+            <h2>CI/CD Pipeline Workflow</h2>
+            <ol>
+                <li><strong>Local Code Commit:</strong> Developer pushes code changes to GitHub repository.</li>
+                <li><strong>Automated Testing:</strong> GitHub Actions runs validation tests.</li>
+                <li><strong>Docker Image Build:</strong> Docker image is built and pushed to DockerHub.</li>
+                <li><strong>Automatic Deployment:</strong> Render pulls the updated image from DockerHub and deploys it live.</li>
+            </ol>
+        </section>
+    </main>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2026 Summer PEP DevOps Project. All rights reserved.</p>
+        </div>
+    </footer>
+</body>
+</html>
