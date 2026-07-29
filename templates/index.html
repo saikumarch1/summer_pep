@@ -3,15 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Student Portal - Summer PEP Project</title>
+    <title>Tic-Tac-Toe Game - Summer PEP Project</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body>
     <header class="navbar">
         <div class="container">
-            <div class="logo">Summer PEP Portal</div>
+            <div class="logo">Summer PEP Project</div>
             <nav>
-                <a href="/" class="active">Home</a>
+                <a href="/" class="active">Tic-Tac-Toe</a>
                 <a href="/about">About</a>
                 <a href="/health" target="_blank">Health Status</a>
             </nav>
@@ -19,31 +19,172 @@
     </header>
 
     <main class="container">
-        <section class="hero">
-            <h1>Welcome to Student Portal</h1>
-            <p>A simple Flask web application demonstrating a complete DevOps CI/CD pipeline.</p>
+        <section class="game-header">
+            <h1>Interactive Tic-Tac-Toe</h1>
+            <p>Play local 2-player or challenge yourself!</p>
         </section>
 
-        <section class="cards-grid">
-            <div class="card">
-                <h3>Course Schedule</h3>
-                <p>View upcoming lecture sessions, workshops, and lab practicals.</p>
+        <section class="scoreboard">
+            <div class="score-card player-x">
+                <span class="player-label">Player X</span>
+                <span id="score-x" class="score-value">0</span>
             </div>
-            <div class="card">
-                <h3>Assignments</h3>
-                <p>Track project submissions, deadline schedules, and evaluation status.</p>
+            <div class="score-card ties">
+                <span class="player-label">Ties</span>
+                <span id="score-ties" class="score-value">0</span>
             </div>
-            <div class="card">
-                <h3>CI/CD Status</h3>
-                <p>Automated build, test, Docker image creation, and deployment active.</p>
+            <div class="score-card player-o">
+                <span class="player-label">Player O</span>
+                <span id="score-o" class="score-value">0</span>
+            </div>
+        </section>
+
+        <section class="game-container">
+            <div id="status-message" class="status-message">Player X's Turn</div>
+
+            <div class="board" id="board">
+                <button class="cell" data-index="0"></button>
+                <button class="cell" data-index="1"></button>
+                <button class="cell" data-index="2"></button>
+                <button class="cell" data-index="3"></button>
+                <button class="cell" data-index="4"></button>
+                <button class="cell" data-index="5"></button>
+                <button class="cell" data-index="6"></button>
+                <button class="cell" data-index="7"></button>
+                <button class="cell" data-index="8"></button>
+            </div>
+
+            <div class="controls">
+                <button id="reset-btn" class="btn btn-primary">Restart Game</button>
+                <button id="reset-scores-btn" class="btn btn-secondary">Reset Scores</button>
             </div>
         </section>
     </main>
 
     <footer>
         <div class="container">
-            <p>&copy; 2026 Summer PEP DevOps Project. All rights reserved.</p>
+            <p>&copy; 2026 Summer PEP DevOps Project | Interactive Tic-Tac-Toe</p>
         </div>
     </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const board = document.getElementById('board');
+            const cells = document.querySelectorAll('.cell');
+            const statusMessage = document.getElementById('status-message');
+            const resetBtn = document.getElementById('reset-btn');
+            const resetScoresBtn = document.getElementById('reset-scores-btn');
+            const scoreXElem = document.getElementById('score-x');
+            const scoreOElem = document.getElementById('score-o');
+            const scoreTiesElem = document.getElementById('score-ties');
+
+            let currentPlayer = 'X';
+            let gameState = ["", "", "", "", "", "", "", "", ""];
+            let gameActive = true;
+            let scores = { X: 0, O: 0, ties: 0 };
+
+            const winningConditions = [
+                [0, 1, 2], [3, 4, 5], [6, 7, 8], // Rows
+                [0, 3, 6], [1, 4, 7], [2, 5, 8], // Columns
+                [0, 4, 8], [2, 4, 6]             // Diagonals
+            ];
+
+            function handleCellClick(e) {
+                const clickedCell = e.target;
+                const clickedIndex = parseInt(clickedCell.getAttribute('data-index'));
+
+                if (gameState[clickedIndex] !== "" || !gameActive) {
+                    return;
+                }
+
+                makeMove(clickedCell, clickedIndex, currentPlayer);
+                checkResult();
+            }
+
+            function makeMove(cell, index, player) {
+                gameState[index] = player;
+                cell.textContent = player;
+                cell.classList.add(player.toLowerCase());
+            }
+
+            function checkResult() {
+                let roundWon = false;
+                let winningCombo = null;
+
+                for (let i = 0; i < winningConditions.length; i++) {
+                    const winCondition = winningConditions[i];
+                    let a = gameState[winCondition[0]];
+                    let b = gameState[winCondition[1]];
+                    let c = gameState[winCondition[2]];
+
+                    if (a === '' || b === '' || c === '') {
+                        continue;
+                    }
+                    if (a === b && b === c) {
+                        roundWon = true;
+                        winningCombo = winCondition;
+                        break;
+                    }
+                }
+
+                if (roundWon) {
+                    statusMessage.textContent = `Player ${currentPlayer} Wins! 🎉`;
+                    statusMessage.classList.add('winner');
+                    scores[currentPlayer]++;
+                    updateScoreboard();
+                    highlightWinningCells(winningCombo);
+                    gameActive = false;
+                    return;
+                }
+
+                let roundDraw = !gameState.includes("");
+                if (roundDraw) {
+                    statusMessage.textContent = `Game Ended in a Draw! 🤝`;
+                    scores.ties++;
+                    updateScoreboard();
+                    gameActive = false;
+                    return;
+                }
+
+                currentPlayer = currentPlayer === "X" ? "O" : "X";
+                statusMessage.textContent = `Player ${currentPlayer}'s Turn`;
+            }
+
+            function highlightWinningCells(combo) {
+                combo.forEach(index => {
+                    cells[index].classList.add('win-cell');
+                });
+            }
+
+            function updateScoreboard() {
+                scoreXElem.textContent = scores.X;
+                scoreOElem.textContent = scores.O;
+                scoreTiesElem.textContent = scores.ties;
+            }
+
+            function resetBoard() {
+                currentPlayer = 'X';
+                gameState = ["", "", "", "", "", "", "", "", ""];
+                gameActive = true;
+                statusMessage.textContent = `Player X's Turn`;
+                statusMessage.className = 'status-message';
+
+                cells.forEach(cell => {
+                    cell.textContent = '';
+                    cell.className = 'cell';
+                });
+            }
+
+            function resetScores() {
+                scores = { X: 0, O: 0, ties: 0 };
+                updateScoreboard();
+                resetBoard();
+            }
+
+            cells.forEach(cell => cell.addEventListener('click', handleCellClick));
+            resetBtn.addEventListener('click', resetBoard);
+            resetScoresBtn.addEventListener('click', resetScores);
+        });
+    </script>
 </body>
 </html>
